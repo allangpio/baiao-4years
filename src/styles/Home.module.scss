@@ -1,0 +1,32 @@
+.container {
+    min-width: 265px;
+    width: 85%;
+    max-width: 700px;
+
+    margin: 0 auto;
+}
+
+.header {    
+    text-align: center;     
+}
+
+.section {    
+    min-width: 265px;
+    width: 85%;
+    max-width: 700px;
+
+    margin: 0 auto;
+
+    p {
+        line-height: 130%;
+        letter-spacing: .05rem;         
+    }
+
+    ul {
+        padding-left: 1rem;        
+    }
+}
+
+.gifts {  
+    margin-top: 3rem;
+}
