@@ -7,7 +7,7 @@
     display: grid;
     place-items: center;
 
-    div {
+    form {
         text-align: center;
 
         background: #fafafa;
@@ -51,7 +51,20 @@
                 font-family: Barlow, sans-serif;
             }
         }
+
+        input {
+            padding: .5rem 1rem;
+            font-family: Barlow, sans-serif;
+            margin: .5rem;
+        }
     }
+
+    span {
+        display: block;
+        font-size: .75rem;        
+    }
+
+    
 }
 
 
