@@ -3,13 +3,20 @@ import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import styles from './gift.module.scss';
-
-import registerUserinFauna from '../../pages/api/users';
+import { api } from '../../services/api';
 
 
 interface GiftDialogProps {
     open: boolean;
     setOpen: (open: boolean) => void;
+    selectedProduct?: string;
+}
+
+interface User {
+    name: string;
+    email: string;
+    mobile?: string;
+    paymentMethod?: string;
     product?: string;
 }
 
@@ -29,65 +36,77 @@ const PRODCUTS = [
         name: 'Doação',
         key: 'donation',
         price: 0,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a545204000053039865802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***630437D1'
     },
     {
         name: 'Apostila de Pandeiro',
         key: 'apostilaPandeiro',
         price: 50,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a54520400005303986540550.005802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***6304FDB5'
     },
     {
         name: 'Apostila de Cavaquinho',
         key: 'apostilaCavaquinho',
         price: 50,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a54520400005303986540550.005802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***6304FDB5'
     },
     {
         name: 'Oficina de Dança',
         key: 'oficinaDanca',
         price: 50,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a54520400005303986540550.005802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***6304FDB5'
     },
     {
         name: 'Oficina de Rabeca',
         key: 'oficinaRabeca',
         price: 50,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a54520400005303986540550.005802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***6304FDB5'
     },
     {
         name: 'Oficina de Zabumba',
         key: 'oficinaZabumba',
         price: 50,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a54520400005303986540550.005802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***6304FDB5'
     },
     {
         name: 'Oficina de Baixo',
         key: 'oficinaBaixo',
         price: 50,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a54520400005303986540550.005802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***6304FDB5'
     },
     {
         name: 'Oficina de Pandeiro',
         key: 'oficinaPandeiro',
         price: 50,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a54520400005303986540550.005802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***6304FDB5'
     },
     {
         name: 'Oficina Ana Maria',
         key: 'oficinaAnaMaria',
         price: 80,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a54520400005303986540580.005802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***6304974B'
     },
     {
         name: 'Camiseta Baião Lascado',
         key: 'camiseta',
         price: 80,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a54520400005303986540580.005802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***6304974B'
     },
     {
         name: 'Adesivo Baião Lascado',
         key: 'adesivoBaiao',
-        price: 20,
+        price: 30,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a54520400005303986540530.005802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***63048686'
     },
     {
         name: '1 ano de Forró na Gruta com acompanhante',
         key: '1ano',
         price: 600,
+        qrcode: '00020126580014BR.GOV.BCB.PIX01367562c356-5408-4e37-91cd-a09bb9aa9a545204000053039865406600.005802BR5923Lincoln Tarcisio Pontes6009SAO PAULO61080540900062070503***63049900'
     }
 ]
 
-export function GiftDialog({ open, setOpen, product }: GiftDialogProps) {
+export function GiftDialog({ open, setOpen, selectedProduct }: GiftDialogProps) {
     const [step, setStep] = useState(0);
 
     const { register, handleSubmit, formState, control, watch } = useForm({
@@ -97,32 +116,51 @@ export function GiftDialog({ open, setOpen, product }: GiftDialogProps) {
             name: null,
             email: null,
             mobile: null,
-            paymentMethod: null,
-            product,
+            paymentMethod: 'pix',
+            selectedProduct: selectedProduct ? selectedProduct : 'donation',
         },
     });
 
-    async function createUser(values) {
+    const paymentMethod = watch("paymentMethod")
+    const productKey = watch("selectedProduct")
+
+    async function createUser(values: User) {
         try {
             console.log('try')
-            await registerUserinFauna(values);
+            const res = await api.post(`/users`, values);
 
-            console.log(values);
-
+            if (res.data) {
+                setStep(3);
+            }
         } catch (error) {
             console.log(error);
         }
     }
 
+    function handleClose() {
+        setOpen(false);
+        setStep(0);
+    }
+
+    function copyToClipboard() {
+        const textToCopy = PRODCUTS.filter(item => item.key === productKey)[0].qrcode;
+        navigator.clipboard.writeText(textToCopy);
+    }
+
     return (
-        <div className={styles.container}>
+        <div className={styles.container} style={{ display: open ? 'grid' : 'none' }}>
             <form onSubmit={handleSubmit(createUser)} className="mx-auto">
+
+                <div className={styles.close}>
+                    <p onClick={() => handleClose()}>X</p>
+                </div>
+
                 {step === 0 && (
                     <div>
                         <h2>Selecione o presente:</h2>
-                        <select {...register('product')}>
+                        <select {...register('selectedProduct')}>
                             {PRODCUTS.map(product => (
-                                <option key={product.key} value={product.key}>{product.name}</option>
+                                <option key={product.key} value={product.key} selected={product.key === selectedProduct} >{product.name}</option>
                             ))}
                         </select>
 
@@ -150,6 +188,7 @@ export function GiftDialog({ open, setOpen, product }: GiftDialogProps) {
                             Voltar
                         </button>
 
+
                     </div>
                 )}
                 {step === 2 && (
@@ -166,9 +205,17 @@ export function GiftDialog({ open, setOpen, product }: GiftDialogProps) {
                         {/* <button>Cartão de Crédito</button>
                         <button>Pix</button> */}
 
-                        <button type="submit">Teste</button>
+                        <button onClick={() => paymentMethod === 'pix' ? setStep(3) : setStep(4)}>Teste</button>
                     </div>
                 )}
+
+                {step === 3 && (
+                    <div>
+                        <button onClick={copyToClipboard}>Copiar código Pix</button>
+                    </div>
+                )}
+
+
             </form>
         </div>
     )

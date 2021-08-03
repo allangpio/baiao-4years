@@ -8,7 +8,8 @@ import { GiftDialog } from '../components/GiftDialog'
 
 
 export default function Home() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [product, setProduct] = useState(null);
   return (
     <div className={styles.container} >
       <Head>
@@ -19,7 +20,7 @@ export default function Home() {
           crossOrigin=""
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600&display=swap" rel="stylesheet" />
         <title>Forró na Gruta 4 Anos </title>
         < meta name="description" content="Festa de 4 anos do Forró na Gruta - Baião Lascado convida Ana Maria Carvalho" />
@@ -82,6 +83,10 @@ export default function Home() {
           <h3>Oficina de Pandeiro</h3>
           <p>Nosso percussionista Allan Gaia Pio, ministrará uma oficina sobre os ritmos do Forró no pandeiro, com foco na adaptação dos toques de zabumba no instrumento. Todo mundo pode participar, quem estiver começando, quem estiver num nível intermediário ou até avançado.</p>
           <p>Serão apresentados alguns conceitos de como é possível adaptar um ritmo ao pandeiro, assim como propostas de exercícios para melhorar a técnica e velocidade no instrumento.</p>
+          <button onClick={() => {
+            setOpen(true)
+            setProduct("apostilaPandeiro")
+          }}>Adquirir presente</button>
         </div>
 
         <div className={styles.gifts}>
@@ -91,7 +96,7 @@ export default function Home() {
 
       </section>
 
-      <GiftDialog open={open} setOpen={setOpen} />
+      <GiftDialog open={open} setOpen={setOpen} selectedProduct={product} />
     </div>
   )
 }

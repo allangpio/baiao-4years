@@ -1,27 +1,30 @@
 import { fauna } from '../../services/fauna';
 import { query as q } from 'faunadb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-interface User {
-    name: string;
-    email: string;
-    mobile?: string;
-    product: string;
-    paymentMethod: string;
-}
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    console.log("api")
+    if (req.method = "POST") {
+        console.log(req, 'req')
+        console.log('if')
 
-export default async function registerUserinFauna(values: User) {
-    try {
-        console.log('try2')
-        await fauna.query(
+
+        const query = await fauna.query(
             q.Create(
                 q.Collection('users'),
                 {
-                    data: { ...values, product: Array(values.product) }
+                    data: { ...req.body, product: Array(req.body.product) }
                 }
             )
-        )
-        console.log(values);
-    } catch (err) {
-        throw new Error(err);
+        );
+
+        const { data } = query;
+
+
+        res.status(200).json({ data });
+    } else {
+        res.setHeader("Allow", "POST")
+        res.status(405).send("Method not allowed");
     }
+
 }

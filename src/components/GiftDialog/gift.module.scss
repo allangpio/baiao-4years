@@ -4,10 +4,14 @@
 
     background: rgba(0, 0, 0, 0.5);
 
-    display: grid;
+    // display: grid;
     place-items: center;
 
+    
+
     form {
+        position: relative;
+        
         text-align: center;
 
         background: #fafafa;
@@ -20,6 +24,17 @@
         max-width: 700px;
 
         padding: 1rem 1.25rem;
+
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 0;
+
+            p{
+                cursor: pointer;
+                color: black;
+            } 
+        }
 
         h2 {
             margin: 1rem auto;
