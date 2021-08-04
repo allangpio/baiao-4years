@@ -85,7 +85,7 @@ export default function Home() {
           <p>Serão apresentados alguns conceitos de como é possível adaptar um ritmo ao pandeiro, assim como propostas de exercícios para melhorar a técnica e velocidade no instrumento.</p>
           <button onClick={() => {
             setOpen(true)
-            setProduct("apostilaPandeiro")
+            setProduct("oficinaPandeiro")
           }}>Adquirir presente</button>
         </div>
 
@@ -93,6 +93,10 @@ export default function Home() {
           <h3>Apostila de Frevo, Forró e Maracatu no pandeiro</h3>
           <p>Apostila escrita pelo nosso percussionista Allan Gaia Pio. São mais de 200 levadas de Frevo, Forró e Maracatu para aplicar no pandeiro. Diversas técnicas são abordadas e possuí exercícios para todos os níveis de dificuldade.</p>
         </div>
+        <button onClick={() => {
+          setOpen(true)
+          setProduct("apostilaPandeiro")
+        }}>Adquirir presente</button>
 
       </section>
 
