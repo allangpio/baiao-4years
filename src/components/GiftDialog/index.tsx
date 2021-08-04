@@ -5,6 +5,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import styles from './gift.module.scss';
 import { api } from '../../services/api';
 
+import QRCode from 'qrcode.react'
+
 
 interface GiftDialogProps {
     open: boolean;
@@ -175,8 +177,10 @@ export function GiftDialog({ open, setOpen, selectedProduct }: GiftDialogProps) 
                         <h2>Insira seus dados</h2>
                         <input name="name" id="name" {...register('name')} type="text" placeholder="Nome *" />
                         {formState?.errors?.name && (<span style={{ color: 'red' }}>{formState?.errors?.name?.message}</span>)}
+                        {!formState?.errors?.name && (<br />)}
                         <input name="email" id="email" {...register('email')} type="email" placeholder="Email *" />
                         {formState?.errors?.email && (<span style={{ color: 'red' }}>{formState?.errors?.email?.message}</span>)}
+                        {!formState?.errors?.email && (<br />)}
                         <input name="mobile" id="mobile" {...register('mobile')} type="tel" placeholder="Celular (opcional)" />
 
 
@@ -211,6 +215,7 @@ export function GiftDialog({ open, setOpen, selectedProduct }: GiftDialogProps) 
 
                 {step === 3 && (
                     <div>
+                        <QRCode value={PRODCUTS.filter(item => item.key === productKey)[0].qrcode} />
                         <button onClick={copyToClipboard}>Copiar código Pix</button>
                     </div>
                 )}
